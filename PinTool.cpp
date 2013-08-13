@@ -16,7 +16,6 @@
 #include <random>
 #include <set>
 
-
 std::ostream * out = &cerr;
 
 default_random_engine *generator;
@@ -324,8 +323,8 @@ int main(int argc, char *argv[]) {
   cerr <<  "=================================================" << endl;
   cerr <<  "This application is instrumented by cfcss-pintool" << endl << endl;
   if (!fileName.empty()) {
-      cerr << "See file " << endl << fileName << endl
-          << "for a log of the modifications performed." << endl;
+      cerr << "Performed modifications are written to:" << endl;
+      cerr << "  " << fileName << endl;
   }
   cerr <<  "=================================================" << endl;
 
