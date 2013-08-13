@@ -232,6 +232,21 @@ VOID ImageLoad(IMG image, VOID *v) {
   }
 }
 
+VOID ReadAddresses(string fileName, set<ADDRINT> *addresses) {
+  if (!fileName.empty()) {
+    ifstream addressFile(fileName);
+    if (addressFile.is_open()) {
+      ADDRINT address;
+      addressFile >> hex;
+      while (addressFile >> address) {
+        addresses->insert(address);
+      }
+    } else {
+      cerr << "Could not open " << fileName << " for reading!" << endl;
+    }
+  }
+}
+
 int main(int argc, char *argv[]) {
   // Initialize PIN library. Print help message if -h(elp) is specified
   // in the command line or the command line is invalid
@@ -266,39 +281,13 @@ int main(int argc, char *argv[]) {
   int addressFilesCount = KnobAddressFiles.NumberOfValues();
   for (int i = 0; i < addressFilesCount; ++i) {
     string addressFileName = KnobAddressFiles.Value(i);
-    if (!addressFileName.empty()) {
-      ifstream addressFile(addressFileName);
-      if (addressFile.is_open()) {
-        ADDRINT address;
-        addressFile >> hex;
-        while (addressFile >> address) {
-          addressesToInstrument->insert(address);
-        }
-      } else {
-        cerr << "Could not open " << addressFileName << " for reading!" << endl;
-
-        return -1;
-      }
-    }
+    ReadAddresses(addressFileName, addressesToInstrument);
   }
 
   int ignoreFilesCount = KnobIgnoreFiles.NumberOfValues();
   for (int i = 0; i < ignoreFilesCount; ++i) {
     string ignoreFileName = KnobIgnoreFiles.Value(i);
-    if (!ignoreFileName.empty()) {
-      ifstream ignoreFile(ignoreFileName);
-      if (ignoreFile.is_open()) {
-        ADDRINT address;
-        ignoreFile >> hex;
-        while (ignoreFile >> address) {
-          addressesToIgnore->insert(address);
-        }
-      } else {
-        cerr << "Could not open " << ignoreFileName << " for reading!" << endl;
-
-        return -1;
-      }
-    }
+    ReadAddresses(ignoreFileName, addressesToIgnore);
   }
 
   set<ADDRINT> intersection;
